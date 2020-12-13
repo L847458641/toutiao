@@ -9,3 +9,11 @@ export const login = data => {
     data
   })
 }
+
+// 发送短信验证码请求模块
+export const onSend = mobile => {
+  return request({
+    method: 'GET',
+    url: `/app/v1_0/sms/codes/${mobile}`
+  })
+}

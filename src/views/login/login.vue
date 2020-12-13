@@ -6,10 +6,11 @@
       left-arrow
       @click-left="$router.back()"
     />
-    <van-form @submit="onLogin" :show-error="false" :show-error-message="false" @failed="onFailed">
+    <van-form @submit="onLogin" :show-error="false" :show-error-message="false" @failed="onFailed" ref="loginForm">
       <van-field
        v-model="user.mobile"
         left-icon="icon iconfont iconshouji"
+        clearable
         placeholder="请输入手机号"
         name="mobile"
         :rules="formRules.mobile"
@@ -23,7 +24,8 @@
         name="code"
         :rules="formRules.code"
       ><template #button>
-          <van-button type="primary" size="small" round>获取验证码</van-button>
+          <van-count-down v-if="isShou" :time="time" format="ss s" @finish = "isShou = false"/>
+          <van-button type="primary" v-else size="small" round @click.prevent="onSend" :loading="isBtn">获取验证码</van-button>
         </template>
       </van-field>
     <div class="loginBtn">
@@ -34,7 +36,7 @@
 </template>
 
 <script>
-import { login } from '@/api/user'
+import { login, onSend } from '@/api/user'
 export default {
   name: 'login',
   data () {
@@ -46,7 +48,13 @@ export default {
       formRules: {
         mobile: [{ required: true, message: '请输入手机号' }, { pattern: /^1[3|5|7|8|9]\d{9}$/, message: '手机格式错误！' }],
         code: [{ required: true, message: '请输入验证码' }, { pattern: /^\d{6}$/, message: '验证码格式错误！' }]
-      }
+      },
+      // 倒计时
+      time: 35 * 1000,
+      // 控制按钮的显示
+      isShou: false,
+      // 控制按钮的状态
+      isBtn: false
     }
   },
   methods: {
@@ -76,6 +84,40 @@ export default {
           position: 'top' // 防止手机键盘太高看不见提示消息
         })
       }
+    },
+    async onSend () {
+      // 1.验证手机号
+      try {
+      // 获取表单实例（要给表单加ref）
+        await this.$refs.loginForm.validate('mobile')
+        // 改变btn的状态
+        this.isBtn = true
+        // 验证通过->请求发送验证码
+        await onSend(this.user.mobile)
+        // 短信发送成功，显示倒计时
+        this.isShou = true
+      } catch (err) {
+        let message = ''
+        // 发送短信失败的错误提示
+        if (err && err.response && err.response.status === 429) {
+          message = '发送太频繁，请稍后重试'
+        } else if (err.name === 'mobile') {
+          // 表单验证失败的错误提示
+          message = err.message
+        } else {
+          // 其他错误
+          message = '发送失败，请稍后重试'
+        }
+        this.$toast({
+          message, // 提示消息
+          position: 'top' // 防止手机键盘太高看不见提示消息
+        })
+      }
+      // 改变btn的状态
+      this.isBtn = false
+      // 2.验证通过->请求发送验证码->用户接收短信->输入验证码->请求登录
+      // 3.请求发送验证码->隐藏发送按钮，显示倒计时
+      // 4.倒计时结束->隐藏倒计时->显示发送按钮
     }
   }
 }
@@ -83,7 +125,7 @@ export default {
 
 <style lang="scss" scoped>
 .code{
-  /deep/ .van-field__left-icon {
+  /deep/ .van-field__left-icon,.van-count-down {
     line-height: 33px;
   }
 }
