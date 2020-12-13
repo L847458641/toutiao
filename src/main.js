@@ -3,11 +3,12 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
-// 加载全局样式
-import './style/index.scss'
 import Vant from 'vant'
 import 'vant/lib/index.css'
 import 'amfe-flexible'
+
+// 加载全局样式
+import './style/index.scss'
 
 Vue.config.productionTip = false
 Vue.use(Vant)
