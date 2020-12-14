@@ -3,8 +3,6 @@
     <van-nav-bar
     class="app-nav-bar"
       title="注册 / 登录"
-      left-arrow
-      @click-left="$router.back()"
     />
     <van-form @submit="onLogin" :show-error="false" :show-error-message="false" @failed="onFailed" ref="loginForm">
       <van-field
@@ -32,6 +30,11 @@
        <van-button type="info" block>登录</van-button>
     </div>
     </van-form>
+    <van-divider
+  :style="{ color: '#b9b8b8', borderColor: '#b9b8b8', padding: '0 16px' }"
+    >
+  点击注册
+</van-divider>
   </div>
 </template>
 
@@ -73,6 +76,7 @@ export default {
         this.$toast.success('登录成功')
         // 将后端返回的数据放到vueX中
         this.$store.commit('setUser', res.data.data)
+        this.$router.push({ name: 'home' })
       } catch (err) {
         console.log('登录失败', err)
         this.$toast.fail('登录失败')
@@ -93,7 +97,7 @@ export default {
       // 获取表单实例（要给表单加ref）
         await this.$refs.loginForm.validate('mobile')
         // 改变btn的状态
-        this.isBtn = true
+        this.isBtn = false
         // 验证通过->请求发送验证码
         await onSend(this.user.mobile)
         // 短信发送成功，显示倒计时

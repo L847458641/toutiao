@@ -9,30 +9,51 @@
          fit="cover"
         src="https://img.yzcdn.cn/vant/cat.jpeg"
        />
-       <div class="username" slot="title">昵称</div>
+       <div class="username" slot="title">李晓伟</div>
        <van-button class="editBtn" round size="mini">编辑资料</van-button>
       </van-cell>
       <van-grid class="grides" :border='false'>
-        <van-grid-item text="头条" ><span slot="icon">1234</span></van-grid-item>
-        <van-grid-item text="关注" ><span slot="icon">12</span></van-grid-item>
-        <van-grid-item text="粉丝" ><span slot="icon">20</span></van-grid-item>
-        <van-grid-item text="获赞" ><span slot="icon">34</span></van-grid-item>
+        <van-grid-item text="头条" ><span slot="icon">0</span></van-grid-item>
+        <van-grid-item text="关注" ><span slot="icon">0</span></van-grid-item>
+        <van-grid-item text="粉丝" ><span slot="icon">0</span></van-grid-item>
+        <van-grid-item text="获赞" ><span slot="icon">0</span></van-grid-item>
       </van-grid>
     </van-cell-group>
 
     <van-grid class="iconList" clickable :column-num="2">
-      <van-grid-item icon="star-o" text="收藏" to="/" />
-      <van-grid-item icon="underway-o" text="历史" url="/vant/mobile.html" />
+      <van-grid-item icon="star-o" text="收藏" to="" />
+      <van-grid-item icon="underway-o" text="历史" to="" />
     </van-grid>
       <van-cell title="消息通知" is-link to="" />
       <van-cell title="小伟同学" is-link to="" />
-      <van-cell class="back" title="退出登录" to="" />
+      <van-cell class="back" title="退出登录" to="" @click="backLogin"/>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
-  name: 'user'
+  name: 'user',
+  computed: {
+    ...mapState(['user'])
+  },
+  methods: {
+    backLogin () {
+      // 提示用户是否确认退出
+      // 确认->退出
+      // 取消->隐藏弹窗
+      this.$dialog.confirm({
+        title: '用户退出',
+        message: '退出当前账号，将直接返回到登录页面！'
+      }).then(() => {
+        // 确定退出清除登录状态，删除token
+        this.$store.commit('clearToken')
+        this.$router.push({ name: 'login' })
+      }).catch(() => {
+        // oncancel
+      })
+    }
+  }
 }
 </script>
 
