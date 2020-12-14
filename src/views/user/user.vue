@@ -7,16 +7,16 @@
         slot="icon"
          round
          fit="cover"
-        src="https://img.yzcdn.cn/vant/cat.jpeg"
+        :src="userInfo.photo"
        />
-       <div class="username" slot="title">李晓伟</div>
+       <div class="username" slot="title">{{userInfo.name}}</div>
        <van-button class="editBtn" round size="mini">编辑资料</van-button>
       </van-cell>
       <van-grid class="grides" :border='false'>
-        <van-grid-item text="头条" ><span slot="icon">0</span></van-grid-item>
-        <van-grid-item text="关注" ><span slot="icon">0</span></van-grid-item>
-        <van-grid-item text="粉丝" ><span slot="icon">0</span></van-grid-item>
-        <van-grid-item text="获赞" ><span slot="icon">0</span></van-grid-item>
+        <van-grid-item text="头条" ><span slot="icon">{{userInfo.art_count}}</span></van-grid-item>
+        <van-grid-item text="关注" ><span slot="icon">{{userInfo.follow_count}}</span></van-grid-item>
+        <van-grid-item text="粉丝" ><span slot="icon">{{userInfo.fans_count}}</span></van-grid-item>
+        <van-grid-item text="获赞" ><span slot="icon">{{userInfo.like_count}}</span></van-grid-item>
       </van-grid>
     </van-cell-group>
 
@@ -32,10 +32,19 @@
 
 <script>
 import { mapState } from 'vuex'
+import { getUser } from '@/api/user'
 export default {
   name: 'user',
+  data () {
+    return {
+      userInfo: {}
+    }
+  },
   computed: {
     ...mapState(['user'])
+  },
+  created () {
+    this.loadGetUser()
   },
   methods: {
     backLogin () {
@@ -52,6 +61,11 @@ export default {
       }).catch(() => {
         // oncancel
       })
+    },
+    async loadGetUser () {
+      const res = await getUser()
+      this.userInfo = res.data.data
+      console.log(this.userInfo)
     }
   }
 }
