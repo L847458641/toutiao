@@ -20,6 +20,7 @@ export default {
       required: true, // 是否必须
     },
   },
+  // props: ['item'],不建议这样写
   data() {
     return {
       list: [],
@@ -52,4 +53,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.channels {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 90px;
+  bottom: 50px;
+  overflow-y: auto;
+}
 </style>

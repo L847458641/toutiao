@@ -78,7 +78,6 @@ export default {
   background-size: cover;
   padding: 38px 0 11px 0;
   /deep/ .van-cell{
-    height: 115px;
     background-color: unset;
   }
   /deep/ .van-grid-item__content{
