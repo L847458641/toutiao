@@ -29,3 +29,11 @@ export const getUser = () => {
     }
   })
 }
+
+// 频道请求获取接口
+export const onLoadGet = () => {
+  return request({
+    method: 'GET',
+    url: '/app/v1_0/channels'
+  })
+}

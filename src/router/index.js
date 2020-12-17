@@ -5,16 +5,16 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/login',
+    path: '/',
     name: 'login',
     component: () => import('../views/login/login.vue')
   },
   {
-    path: '/',
+    path: '/layout',
     component: () => import('../views/layout/layout.vue'),
     children: [
       {
-        path: '', // 默认子路由
+        path: '/home', // 默认子路由
         name: 'home',
         component: () => import('../views/home/home.vue')
       },
