@@ -65,7 +65,6 @@ export default {
     async loadGetUser () {
       const res = await getUser()
       this.userInfo = res.data.data
-      console.log(this.userInfo)
     }
   }
 }

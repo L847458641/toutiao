@@ -35,7 +35,6 @@ export default {
       // 获取频道数据
       const { data } = await onLoadGet();
       this.channels = data.data.channels;
-      console.log(this.channels);
     },
   },
 };
