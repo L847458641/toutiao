@@ -18,11 +18,15 @@
       v-model="isShow"
       position="top"
       class="height"
-      @click="popup"
       closeable
       close-icon-position="top-left"
     >
-    <p-opup :userchannels="channels"/>
+      <p-opup
+        :userchannels="channels"
+        @close="isShow = false"
+        @updateActive="active=$event"
+        :active = "active"
+      />
     </van-popup>
   </div>
 </template>
@@ -30,10 +34,11 @@
 <script>
 import { onLoadGet } from "../../api/user";
 import CHannels from "@/components/channels";
-import POpup from "@/components/popup/popup"
+import POpup from "@/components/popup/popup";
 export default {
   components: {
-    CHannels, POpup
+    CHannels,
+    POpup,
   },
   name: "home",
   data() {
@@ -52,7 +57,6 @@ export default {
       const { data } = await onLoadGet();
       this.channels = data.data.channels;
     },
-    popup() {},
     listZhang() {
       this.isShow = true;
     },

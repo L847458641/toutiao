@@ -61,7 +61,6 @@ export default {
       });
       // 将数组合并-方法一：concat，方法二：...str
       this.content.push(...data.data.results);
-      console.log(this.content);
       // 加载结束
       this.loading = false;
       // 如果还有数据
