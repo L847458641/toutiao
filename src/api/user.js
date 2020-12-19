@@ -30,8 +30,16 @@ export const getUser = () => {
   })
 }
 
-// 频道列表请求获取接口
+// 我的频道列表请求获取接口
 export const onLoadGet = () => {
+  return request({
+    method: 'GET',
+    url: '/app/v1_0/user/channels'
+  })
+}
+
+// 所有频道列表请求获取接口
+export const onAllLoadGet = () => {
   return request({
     method: 'GET',
     url: '/app/v1_0/channels'

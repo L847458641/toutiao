@@ -20,14 +20,14 @@
         </div>
         <span>{{ channlitem.aut_name }}</span>
         <span>{{ channlitem.comm_count }}评论</span>
-        <span>{{ channlitem.pubdate }}</span>
+        <span>{{ channlitem.pubdate | relativeTime }}</span>
       </div>
       <!-- 默认插槽default可以省略不写 -->
       <!-- 三种情况 0,1,3-->
       <van-image
         class="rightImg"
         v-if="channlitem.cover.type === 1"
-        fit="cover"
+        fit="contain"
         :src="channlitem.cover.images[0]"
       />
     </van-cell>
@@ -47,33 +47,39 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.title {
-  font-size: 16px;
-  color: #3a3a3a;
-}
-.imagesBox {
-  display: flex;
-  .imagesitem {
-    flex: 1;
-    height: 73px;
-    .sanImge {
-      width: 100%;
+.channlitem {
+  border-bottom: 1px solid #dfe0e4;
+  .title {
+    font-size: 16px;
+    color: #3a3a3a;
+    font-weight: bolder;
+  }
+  .imagesBox {
+    display: flex;
+    .imagesitem {
+      flex: 1;
       height: 73px;
+      .sanImge {
+        width: 100%;
+        height: 73px;
+      }
     }
   }
-}
-/deep/ .van-cell__value {
-  width: 116px;
-  height: 73px;
-  flex: unset;
-  margin-left: 10px;
-}
-span {
-  margin-right: 12px;
-  letter-spacing: 2px;
-}
-.rightImg {
-  width: 116px;
-  height: 73px;
+  /deep/ .van-cell__value {
+    width: 116px;
+    height: 73px;
+    flex: unset;
+    margin-left: 10px;
+  }
+  span {
+    display: inline-block;
+    margin-top: 5px;
+    margin-right: 12px;
+    letter-spacing: 1px;
+  }
+  .rightImg {
+    width: 116px;
+    height: 73px;
+  }
 }
 </style>

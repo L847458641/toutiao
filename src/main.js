@@ -6,6 +6,7 @@ import store from './store'
 import Vant from 'vant'
 import 'vant/lib/index.css'
 import 'amfe-flexible'
+import './utils/day'
 
 // 加载全局样式
 import './style/index.scss'
