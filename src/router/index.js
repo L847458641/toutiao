@@ -5,12 +5,12 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/login',
+    path: '/',
     name: 'login',
     component: () => import('../views/login/login.vue')
   },
   {
-    path: '/',
+    path: '/layout',
     component: () => import('../views/layout/layout.vue'),
     children: [
       {
@@ -34,6 +34,12 @@ const routes = [
         component: () => import('../views/user/user.vue')
       }
     ]
+  },
+  {
+    path: '/search', // 默认子路由
+    name: 'search',
+    component: () => import('../components/search.vue')
+
   }
 ]
 
