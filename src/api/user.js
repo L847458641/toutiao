@@ -2,7 +2,7 @@
 import request from '@/utils/request'
 import store from '@/store/'
 
-// 登录注/注册
+// 登录/注册
 export const login = data => {
   return request({
     method: 'POST',
@@ -52,5 +52,27 @@ export const onLoadGetContent = params => {
     method: 'GET',
     url: '/app/v1_1/articles',
     params
+  })
+}
+
+// 添加频道请求获取接口
+export const onPostchannels = data => {
+  return request({
+    method: 'PATCH',
+    url: '/app/v1_0/user/channels',
+    headers: {
+      Authorization: `Bearer ${store.state.user.token}`
+    },
+    data
+  })
+}
+// 删除频道请求获取接口
+export const delPostchannels = (channelId) => {
+  return request({
+    method: 'DELETE',
+    url: `/app/v1_0/user/channels/${channelId}`,
+    headers: {
+      Authorization: `Bearer ${store.state.user.token}`
+    },
   })
 }

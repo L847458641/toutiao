@@ -12,14 +12,13 @@
         {{ isShowClear ? "完成" : "编辑" }}
       </van-button>
     </van-cell>
-    <!-- :class="{active:index === }" -->
     <van-grid :gutter="10">
       <van-grid-item
         :icon="isShowClear && index !== 0 ? 'clear' : ''"
         v-for="(userchannelsitem, index) in userchannels"
         :key="index"
         :text="userchannelsitem.name"
-        @click="del(index)"
+        @click="del(userchannelsitem, index)"
         :class="{ active: index === active }"
       />
     </van-grid>
@@ -38,7 +37,8 @@
 </template>
 
 <script>
-import { onAllLoadGet } from "../../api/user";
+import { onAllLoadGet, onPostchannels, delPostchannels } from "../../api/user";
+import { setItem } from '@/utils/store'
 export default {
   name: "popup",
   props: {
@@ -55,6 +55,7 @@ export default {
     return {
       allPopup: [],
       isShowClear: false, // 控制编辑显示
+      user: localStorage.getItem("user"),
     };
   },
   // 计算属性
@@ -92,28 +93,56 @@ export default {
       const { data } = await onAllLoadGet();
       this.allPopup = data.data.channels;
     },
-    add(tuiPopupitem) {
-      this.userchannels.push(tuiPopupitem);
+    async add(tuiPopupitem) {
+      try {
+        this.userchannels.push(tuiPopupitem);
+        if (this.user) {
+          // 登录了，数组存储到线上
+          await onPostchannels({
+            channels: [{ id: tuiPopupitem.id, seq: this.userchannels.length }],
+          });
+          this.$toast("添加频道成功");
+        } else {
+          // 没有登录，数组存储到本地
+          setItem("user-channels", this.userchannels);
+        }
+      } catch (err) {
+        console.log(err);
+        this.$toast("添加频道失败");
+      }
     },
     edit() {
       this.isShowClear = !this.isShowClear;
     },
-    del(index) {
+    del(userchannelsitem, index) {
       if (this.isShowClear && index !== 0) {
         // 编辑状态并且索引不为0，保留第一个频道
         // 编辑状态,删除频道
-        this.deleteClick(index);
+        this.deleteClick(userchannelsitem, index);
       } else {
         // 非编辑状态，切换频道
         this.switchClick(index);
       }
     },
-    deleteClick(index) {
+    async deleteClick(userchannelsitem, index) {
       // 删除第index个位置的索引开始删除一个(包括索引本身)
       this.userchannels.splice(index, 1);
       // 如果删除的是当前激活的频道之前的频道,那么active应该是当前active-1
       if (index <= this.active) {
         this.$emit("updateActive", this.active - 1);
+      }
+
+      try {
+        // 数据持久化
+        if (this.user) {
+          await delPostchannels(userchannelsitem.id);
+        } else {
+          // 没有登录，数组存储到本地
+          setItem("user-channels", this.userchannels);
+        }
+      } catch (err) {
+        console.log(err);
+        this.$toast("删除频道失败，请稍后重试");
       }
     },
     switchClick(index) {

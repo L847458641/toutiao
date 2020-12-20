@@ -1,7 +1,12 @@
 <template>
   <div class="home">
     <van-nav-bar class="app-nav-bar">
-      <van-button slot="title" round type="info" icon="search" size="small"
+      <van-button
+        slot="title"
+        round
+        type="info"
+        icon="search"
+        size="small"
         >搜索</van-button
       >
     </van-nav-bar>
@@ -24,8 +29,8 @@
       <p-opup
         :userchannels="channels"
         @close="isShow = false"
-        @updateActive="active=$event"
-        :active = "active"
+        @updateActive="active = $event"
+        :active="active"
       />
     </van-popup>
   </div>
@@ -35,10 +40,15 @@
 import { onLoadGet } from "../../api/user";
 import CHannels from "@/components/channels";
 import POpup from "@/components/popup/popup";
+import { mapState } from "vuex";
+import { getItem } from "@/utils/store";
 export default {
   components: {
     CHannels,
     POpup,
+  },
+  computed: {
+    ...mapState(["user"]),
   },
   name: "home",
   data() {
@@ -53,9 +63,24 @@ export default {
   },
   methods: {
     async loadGet() {
-      // 获取频道数据
-      const { data } = await onLoadGet();
-      this.channels = data.data.channels;
+      let channels = [];
+      if (this.user) {
+        // 已登录,获取频道数据
+        const { data } = await onLoadGet();
+        channels = data.data.channels;
+      } else {
+        // 没有登录，看看是否有本地存储的频道数据
+        const locatChannels = getItem("user-channels");
+        if (locatChannels) {
+          // 没有登录当是由本地存储频道数据
+          channels = locatChannels;
+        } else {
+          // 没有登录,没有本地存储频道数据
+          const { data } = await onLoadGet();
+          channels = data.data.channels;
+        }
+      }
+      this.channels = channels;
     },
     listZhang() {
       this.isShow = true;
